@@ -3,9 +3,9 @@
 Using AI tools for this challenge is allowed. Be honest here — an accurate
 "I used AI heavily" is worth more to us than an inaccurate "I did not".
 
-**Did you use AI tools?** (yes / no):
+**Did you use AI tools?** yes:
 
-**Which ones?** (e.g. ChatGPT, Claude, Copilot, Cursor):
+**Which ones?** Claude:
 
 > If you answered **no**, write "N/A" in sections 1 and 2 and skip to
 > section 3. That is a perfectly good answer.
@@ -73,6 +73,15 @@ Explain in short 1 liners:
 3. compose change
 ```
 
+7. 
+```
+I have 30 minutes left, and only left with this bonus:
+"Document any additional security or performance improvements you make to the proxy image."
+
+I want you to loop through anything related to the proxy image,  and tell me all of things related to security or performance need with grade of 1 to 10 of importance.
+Sort and list the ones you found and also give each one a guess of the time it would take
+```
+
 ---
 
 ## 2. Where the AI got it wrong
@@ -95,4 +104,4 @@ you did instead. 3-5 sentences.
 
 We would rather know. Write "nothing" if that is the case.
 
-> ...
+> nothing
