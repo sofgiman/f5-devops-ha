@@ -238,4 +238,34 @@ f5-devops-ha-proxy .. latest ... 886c7002a8e4 ... 60MB
 
 ---
 
+> 3. Additional security / performance improvements
+
+### `server_tokens off;` (security)
+- Nginx leaks its exact version in the `Server` header and error pages by default - a free CVE fingerprint.
+- Off leaves just `Server: nginx`, no behavior change.
+
+### Pin the base image by digest (security / reproducibility)
+- `stable-alpine` is a moving tag, so the same Dockerfile can build a different image tomorrow.
+- Pinning `@sha256:<digest>` locks the build to the exact bits we reviewed (patches now bumped deliberately).
+
+### Proxy timeouts (resilience)
+- Default upstream timeouts are 60s; this backend answers in ms (no DB), so that's just slow failure detection.
+- Set `connect 3s` / `send+read 10s` to fail fast on a stuck backend with plenty of margin.
+
+---
+
 ## Anything you would do differently with more time
+
+Two more things I'd add to the proxy if I had the time:
+
+**Make the container read-only and drop its privileges.**
+Set `read_only: true` and give nginx a `tmpfs` for `/tmp` (that's where the pid lives now).
+Plus `no-new-privileges` and `cap_drop: ALL` - non-root nginx on 8080 doesn't need any capabilities.
+So even if someone pops the proxy, they can't write to disk or escalate.
+Didn't do it yet because read-only can break startup if I miss a writable path, and I'd want a proper test pass first.
+
+**Reuse the connection to the backend (keepalive).**
+Right now the proxy opens a fresh TCP connection to the backend on every request.
+Adding `keepalive 32` in the upstream + `proxy_http_version 1.1` + clearing the `Connection` header makes it reuse a pool instead.
+That's a handshake saved per request once there's real load.
+Skipped it for now because traffic here is tiny, so the payoff is basically nothing for the tests.
