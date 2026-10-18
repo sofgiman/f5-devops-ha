@@ -185,7 +185,7 @@ Add the `x` bit for the file, using the following commands:
 chmod +x scripts/run-tests.sh  
 git add scripts/run-tests.sh
 ```
-This will make the `git ls-files -s` permissions to be `10755` instead of `100644`
+This will make the `git ls-files -s` permissions to be `100755` instead of `100644`
 
 ---
 
