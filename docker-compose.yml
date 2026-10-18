@@ -7,20 +7,42 @@ services:
       - "8080:8080"
     environment:
       - PORT=8080
+    # The backend loads its config (a slow, simulated per-key fetch) before it
+    # binds the port, so it is not reachable for several seconds after start.
+    # Probe /health, which only answers once the server is actually listening,
+    # so dependents can wait for readiness instead of mere container start.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+      start_period: 12s
 
   proxy:
     build:
       context: ./proxy
-    # Published for local debugging: curl http://localhost:8081/nginx-health
+    # Local debug: curl http://localhost:80/nginx-health.
+    # Host :80 -> container :8080 (non-root nginx binds the unprivileged 8080).
     ports:
-      - "8081:80"
+      - "80:8080"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    # Probe /nginx-health so dependents wait for readiness, not just start.
+    # In-container check hits :8080 via 127.0.0.1 (nginx is IPv4-only; busybox
+    # wget won't fall back from ::1 like curl did).
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/nginx-health"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
 
   test-runner:
     build:
       context: ./test-runner
     depends_on:
-      - proxy
+      proxy:
+        condition: service_healthy
     environment:
-      - PROXY_URL=http://proxy:80
+      - PROXY_URL=http://proxy:8080
