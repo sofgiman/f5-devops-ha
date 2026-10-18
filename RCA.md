@@ -159,12 +159,33 @@ Cause real life could have real delays. Moreover, even in `app.py`, it's said th
 ## Defect 4: CI pipeline fails
 
 ### Symptom / error output
+running `./scripts/run-tests.sh` both in terminal and in CI actions, results in error output:  
+`/home/runner/work/_temp/adeef573-07a1-4239-8bd1-d96cb809ef67.sh: line 1: ./scripts/run-tests.sh: Permission denied`  
+`zsh: permission denied: ./scripts/run-tests.sh`
 
 ### How I diagnosed it
+Knew the error is on the CI, so looked at error messages. Ran also in my terminal and verified with Claude.
 
 ### Root cause
+the `./scripts/run-tests.sh` doesn't have the `x` (execution bit) on the file, meaning no one can execute the file.
+You can see it with the following command 
+```
+ git ls-files -s scripts/run-tests.sh
+100644 ab1f9a3696f5fff1a004f335bbe2cfaea626dc46 0	scripts/run-tests.sh
+```
+`100` is for a regular files, but `644` means the permission are:
+- u(user/owner)  - write + read
+- g(group)       - read
+- o(other)       - read
 
+No `x` bit in any slot, so no one can execute it - not CI, not even the owner locally.
 ### Fix
+Add the `x` bit for the file, using the following commands:  
+```
+chmod +x scripts/run-tests.sh  
+git add scripts/run-tests.sh
+```
+This will make the `git ls-files -s` permissions to be `10755` instead of `100644`
 
 ---
 

@@ -24,7 +24,26 @@ So give me commands to show and see the bug. Don't show me the fix yet. `
 3. `Lets fix task 3:
 Diagnose the defect, after finding the error symptom, log it for me and wait till I understand it.
 Afterwards (I prompt u to continue), Show me 2 options to fix the bug with your recommendation (grade each one from 1 to 10) and lets discuss before you fix it.`
+4. 
+```
+Let's fix task 4 (CI is red). This is the F5 DevOps challenge repo - see README.md
+for the task, and app.py and the tests are off-limits.
 
+Work it the way I like:
+1. Diagnose the defect first. Once you find the symptom, DON'T edit RCA.md or
+   AI_PROMPTS.md and don't just run everything yourself - show me the error and
+   give me the commands so I can reproduce it on my own. Then wait till I confirm
+   I understand it.
+2. After I prompt you to continue, show me 2 options to fix it, each graded 1-10
+   at a senior level, with your recommendation. Let's discuss before you touch
+   anything.
+3. Only once I say go, apply the fix and verify run-tests.sh / CI is green.
+
+Git flow (I drive the merges): new branch off latest main named fix/task4-...,
+conventional commit (no co-author/attribution trailers in the commit), push, open
+a PR into main, and I'll tell you when to merge. Writing style: no em dashes, plain
+"-". CLAUDE.md stays untracked.
+```
 ---
 
 ## 2. Where the AI got it wrong
