@@ -219,6 +219,23 @@ f5-devops-ha-proxy .. latest ... 97313c10b3fb   5 minutes ago ... 61.7MB
 
 325MB shrunk into 61.7MB.
 
+### Update (after the non-root bonus below)
+Swapped the base to `nginxinc/nginx-unprivileged:stable-alpine` to run as non-root.
+Size barely moved (dropping `curl`/`apk` offsets the unprivileged layer):
+```
+idan74@MacBook-Air-sl-ydn f5-devops-ha % docker images | grep f5-devops-ha-proxy
+f5-devops-ha-proxy .. latest ... 886c7002a8e4 ... 60MB
+```
+
+---
+
+> 2. Run the proxy as a non-root user
+
+### What I changed
+- Unprivileged image: base is now `nginxinc/nginx-unprivileged:stable-alpine`, so nginx runs as UID 101 and the master (PID 1) is no longer root.
+- `proxy/nginx.conf`: set `listen 8080` and added `pid /tmp/nginx.pid;` - a non-root process can't bind privileged :80 or write the default `/run/nginx.pid`.
+- `docker-compose.yml`: publish `80:8080` (edge still on :80), healthcheck probes `127.0.0.1:8080` via wget, and the test-runner targets `proxy:8080`.
+
 ---
 
 ## Anything you would do differently with more time

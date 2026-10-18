@@ -44,6 +44,35 @@ conventional commit (no co-author/attribution trailers in the commit), push, ope
 a PR into main, and I'll tell you when to merge. Writing style: no em dashes, plain
 "-". CLAUDE.md stays untracked.
 ```
+
+5. I added a debugging routine, so for every task/bonus task to `claude.md` I would just say: "lets start the `minimize proxy image` bonus task using the debugging routine". This is the routine:
+```
+# Debugging routine (every task, including bonus)
+
+- Diagnose first. When you find the symptom, DON'T edit `RCA.md` or `AI_PROMPTS.md`
+  and don't just run it all yourself - show me the error and give me the commands
+  so I can reproduce it on my own. Then wait until I confirm I understand it.
+- After I prompt you to continue, show 2 fix options, each graded 1-10 at a senior
+  level, with your recommendation. Discuss before touching anything.
+- Only once I say go: apply the fix and verify (`run-tests.sh` / CI green).
+- I drive git. You branch/commit/push/PR when I ask; I decide when to merge.
+
+```
+
+6. 
+``` 
+Ok, This task changed a stuff related to previous tasks.
+Especially  task minimize proxy image bonus - we changed the image:
+
+add a small  short lines (max 2-3) Update at the end of the section, which says we updated the image and the reason - also show the new image size with the same format.
+Also, add in the @RCA.md  small explanation on what we did here to  stop running as root. 
+Explain in short 1 liners:
+
+1. the unprivileged nginx image
+2. @proxy/nginx.conf  change,
+3. compose change
+```
+
 ---
 
 ## 2. Where the AI got it wrong

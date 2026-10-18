@@ -21,16 +21,18 @@ services:
   proxy:
     build:
       context: ./proxy
-    # Published for local debugging: curl http://localhost:8081/nginx-health
+    # Local debug: curl http://localhost:80/nginx-health.
+    # Host :80 -> container :8080 (non-root nginx binds the unprivileged 8080).
     ports:
-      - "8081:80"
+      - "80:8080"
     depends_on:
       backend:
         condition: service_healthy
-    # Probe nginx's own /nginx-health so dependents wait until the proxy is
-    # actually accepting connections, not just until its container launched.
+    # Probe /nginx-health so dependents wait for readiness, not just start.
+    # In-container check hits :8080 via 127.0.0.1 (nginx is IPv4-only; busybox
+    # wget won't fall back from ::1 like curl did).
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:80/nginx-health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/nginx-health"]
       interval: 2s
       timeout: 3s
       retries: 5
@@ -43,4 +45,4 @@ services:
       proxy:
         condition: service_healthy
     environment:
-      - PROXY_URL=http://proxy:80
+      - PROXY_URL=http://proxy:8080
