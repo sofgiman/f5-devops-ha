@@ -255,3 +255,17 @@ f5-devops-ha-proxy .. latest ... 886c7002a8e4 ... 60MB
 ---
 
 ## Anything you would do differently with more time
+
+Two more things I'd add to the proxy if I had the time:
+
+**Make the container read-only and drop its privileges.**
+Set `read_only: true` and give nginx a `tmpfs` for `/tmp` (that's where the pid lives now).
+Plus `no-new-privileges` and `cap_drop: ALL` - non-root nginx on 8080 doesn't need any capabilities.
+So even if someone pops the proxy, they can't write to disk or escalate.
+Didn't do it yet because read-only can break startup if I miss a writable path, and I'd want a proper test pass first.
+
+**Reuse the connection to the backend (keepalive).**
+Right now the proxy opens a fresh TCP connection to the backend on every request.
+Adding `keepalive 32` in the upstream + `proxy_http_version 1.1` + clearing the `Connection` header makes it reuse a pool instead.
+That's a handshake saved per request once there's real load.
+Skipped it for now because traffic here is tiny, so the payoff is basically nothing for the tests.
