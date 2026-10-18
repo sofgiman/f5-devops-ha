@@ -248,6 +248,10 @@ f5-devops-ha-proxy .. latest ... 886c7002a8e4 ... 60MB
 - `stable-alpine` is a moving tag, so the same Dockerfile can build a different image tomorrow.
 - Pinning `@sha256:<digest>` locks the build to the exact bits we reviewed (patches now bumped deliberately).
 
+### Proxy timeouts (resilience)
+- Default upstream timeouts are 60s; this backend answers in ms (no DB), so that's just slow failure detection.
+- Set `connect 3s` / `send+read 10s` to fail fast on a stuck backend with plenty of margin.
+
 ---
 
 ## Anything you would do differently with more time
