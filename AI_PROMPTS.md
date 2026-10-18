@@ -19,7 +19,8 @@ List the main prompts you used. Paraphrasing is fine.
 1. `Don't touch any code yet. Explain how this stack works end to end, what
 each file does, and where you think the 4 bugs are. Note: app.py and the
 tests can't be edited (see in @README.md ).`
-2. `...`
+2. `I want to fix task 2, I want to first diagnose how and why it happens.
+So give me commands to show and see the bug. Don't show me the fix yet. `
 3. `...`
 
 ---
