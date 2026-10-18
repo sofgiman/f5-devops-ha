@@ -238,4 +238,16 @@ f5-devops-ha-proxy .. latest ... 886c7002a8e4 ... 60MB
 
 ---
 
+> 3. Additional security / performance improvements
+
+### `server_tokens off;` (security)
+- Nginx leaks its exact version in the `Server` header and error pages by default - a free CVE fingerprint.
+- Off leaves just `Server: nginx`, no behavior change.
+
+### Pin the base image by digest (security / reproducibility)
+- `stable-alpine` is a moving tag, so the same Dockerfile can build a different image tomorrow.
+- Pinning `@sha256:<digest>` locks the build to the exact bits we reviewed (patches now bumped deliberately).
+
+---
+
 ## Anything you would do differently with more time
