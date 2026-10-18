@@ -193,7 +193,31 @@ This will make the `git ls-files -s` permissions to be `100755` instead of `1006
 
 Optional. Answer only the ones you got to — number them, skip the rest.
 
->
+> 1. Minimize Proxy Image
+
+### What I changed
+- Swapped the base image from `ubuntu:24.04` to the official `nginx:alpine`.
+- Dropped `htop`, `vim`, and `git` - interactive/debug tools with no job inside
+  a running proxy (git alone pulled in ~57MB of perl).
+- Kept only `curl`, installed with `apk add --no-cache curl`, because the compose
+  healthcheck probes `/nginx-health` with `curl -fsS`. `--no-cache` leaves no
+  package index behind in the layer.
+- Nginx now comes pre-installed and pre-configured from the upstream image
+  instead of via `apt-get install nginx`.
+
+### Image size: before and after
+before, the image size was:
+```
+idan74@MacBook-Air-sl-ydn f5-devops-ha % docker images | grep f5-devops-ha-proxy
+f5-devops-ha-proxy ... latest ... 9fb892b7034d   2 hours ago .. 325MB
+```
+and now:
+```
+idan74@MacBook-Air-sl-ydn f5-devops-ha % docker images | grep f5-devops-ha-proxy
+f5-devops-ha-proxy .. latest ... 97313c10b3fb   5 minutes ago ... 61.7MB
+```
+
+325MB shrunk into 61.7MB.
 
 ---
 

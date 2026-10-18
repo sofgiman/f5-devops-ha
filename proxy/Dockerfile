@@ -1,9 +1,9 @@
-# Proxy image inherited from the previous team.
+# Minimal proxy image: official nginx on Alpine.
+# Only curl is added, for the compose healthcheck (curl -fsS /nginx-health).
 
-FROM ubuntu:24.04
+FROM nginx:alpine
 
-RUN apt-get update && \
-    apt-get install -y nginx curl htop vim git
+RUN apk add --no-cache curl
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
